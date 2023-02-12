@@ -25,12 +25,12 @@ class SecretSanta:
     def __init__(self, name: str, budget: float) -> None:
         """Initialize a secret santa object.
 
-        >>> secret_santa = SecretSanta(20.0)
+        >>> secret_santa = SecretSanta('Christmas 2023', 20.0)
         >>> secret_santa.budget
         20.0
-        >>> self._wishlist
+        >>> secret_santa._wishlist
         {}
-        >>> self._pointer
+        >>> secret_santa._pointer
         {}
         """
         self.name = name
@@ -43,7 +43,7 @@ class SecretSanta:
         """Return whether a <user> has been added to the exchange. If the user
         is already in the exchange, return false.
 
-        >>> secret_santa = SecretSanta(20.0)
+        >>> secret_santa = SecretSanta('Christmas 2023', 20.0)
         >>> secret_santa.add_user('JP', 1)
         True
         """
@@ -57,7 +57,7 @@ class SecretSanta:
     def add_wish(self, user_id: int, wish: str) -> None:
         """Add a <wish> this a person with <user_id>.
 
-        >>> secret_santa = SecretSanta(20.0)
+        >>> secret_santa = SecretSanta('Christmas 2023', 20.0)
         >>> secret_santa.add_user('JP', 20)
         True
         >>> secret_santa.add_wish(20, 'Iphone 11 blue case')
@@ -69,7 +69,7 @@ class SecretSanta:
         """Return if the pointer has been succesfully randomized. Each key will
         point to another key instead of None.
 
-        >>> secret_santa = SecretSanta(20.0)
+        >>> secret_santa = SecretSanta('Christmas 2023', 20.0)
         >>> secret_santa.add_user('JP', 20)
         True
         >>> secret_santa.add_user('Nick', 24)
