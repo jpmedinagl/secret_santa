@@ -136,6 +136,8 @@ class SecretSanta:
         >>> new_pointer = {20: 24, 24: 20}
         >>> secret_santa.set_pointer(new_pointer)
         True
+        >>> secret_santa._pointer == {20: 24, 24: 20}
+        True
         """
         if self._is_valid_pointer(pointer):
             self._pointer = pointer
