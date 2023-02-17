@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import Optional
 import random
 
@@ -65,6 +66,27 @@ class SecretSanta:
         if user_id in self._people:
             self._wishlist[user_id].append(wish)
 
+    def remove_user(self, user_id: int) -> bool:
+        """Remove a user within the exchange. Once the user is removed,
+        randomize the pointer if it has already been initialized.
+
+        >>> secret_santa = SecretSanta('Christmas 2023', 20.0)
+        >>> secret_santa.add_user('JP', 20)
+        True
+        >>> secret_santa.add_user('Nick', 24)
+        True
+        >>> secret_santa.remove_user(24)
+        True
+        >>> 24 in secret_santa._people
+        False
+        """
+        if user_id in self._people:
+            self._people.pop(user_id)
+            if self._pointer != {}:
+                self.randomize_pointer()
+            return True
+        return False
+
     def randomize_pointer(self) -> bool:
         """Return if the pointer has been succesfully randomized. Each key will
         point to another key instead of None.
@@ -96,6 +118,94 @@ class SecretSanta:
             people_ids.remove(rand)
             self._pointer[person] = rand
         return True
+
+    def set_pointer(self, pointer: dict) -> bool:
+        """Return if the current pointer was succesfully set to a new value.
+        It is succesfully set if pointer is a valid pointer.
+
+        If the pointer is already another dictionary, overwrite it with the
+        new pointer.
+
+        >>> secret_santa = SecretSanta('2023 Christmas Exchange', 20.0)
+        >>> secret_santa.add_user('JP', 20)
+        True
+        >>> secret_santa.add_user('Nick', 24)
+        True
+        >>> secret_santa._pointer == {20: None, 24: None}
+        True
+        >>> new_pointer = {20: 24, 24: 20}
+        >>> secret_santa.set_pointer(new_pointer)
+        True
+        """
+        if self._is_valid_pointer(pointer):
+            self._pointer = pointer
+            return True
+        return False
+
+    def _is_valid_pointer(self, new_pointer: dict) -> bool:
+        """Return if <new_pointer> is a valid pointer.
+
+        A pointer is valid if every key has a value corresponding to another
+        key in the dictionary. Every value must be a key. If every value is
+        None that is valid, if only some are None, that is invalid.
+        """
+        keys = set(new_pointer.keys())
+        values = set(new_pointer.values())
+
+        if keys != values or keys != set(self._pointer.keys()):
+            return False
+
+        for key, value in new_pointer.items():
+            if key == value or (value not in keys and value is not None):
+                return False
+        return True
+
+    def to_dict(self) -> dict:
+        """Return the representation of the secret_santa object as a dictionary.
+
+        >>> secret_santa = SecretSanta('2023 Christmas Exchange', 20.0)
+        >>> secret_santa.add_user('JP', 20)
+        True
+        >>> secret_santa.add_user('Nick', 24)
+        True
+        >>> secret_santa.add_user('Tara', 3)
+        True
+        >>> secret_santa.add_wish(20, 'Iphone 11 blue case')
+        >>> secret_santa.add_wish(20, 'Plato: Symposium')
+        >>> secret_santa.to_dict() == {
+        ... "name": "2023 Christmas Exchange",
+        ... "budget": 20.0,
+        ... "people": {"20": "JP", "24": "Nick", "3": "Tara"},
+        ... "wishlist": {
+        ... "20": ["Iphone 11 blue case", "Plato: Symposium"],
+        ... "24": [],
+        ... "3": []},
+        ... "pointer": {"20": None, "24": None, "3": None}
+        ... }
+        True
+        """
+        dictionary = dict()
+
+        dictionary["name"] = self.name
+        dictionary["budget"] = self.budget
+
+        people_dictionary = {}
+        wishlist_dictionary = {}
+        pointer_dictionary = {}
+
+        for person in self._people:
+            people_dictionary[str(person)] = self._people[person]
+            wishlist_dictionary[str(person)] = self._wishlist[person]
+            pointer_dictionary[str(person)] = self._pointer[person]
+
+        dictionary["people"] = people_dictionary
+        dictionary["wishlist"] = wishlist_dictionary
+        dictionary["pointer"] = pointer_dictionary
+
+        return dictionary
+
+    def from_dict(self, secret_santa: dict) -> SecretSanta:
+        pass
 
     def __str__(self) -> str:
         """Returns a string representation of the secret santa object.
