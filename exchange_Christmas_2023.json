@@ -1,0 +1,20 @@
+{
+    "name": "Christmas 2023",
+    "budget": 50.0,
+    "people": {
+        "20": "JP",
+        "24": "Nick"
+    },
+    "wishlist": {
+        "20": [
+            "Plato: Symposium"
+        ],
+        "24": [
+            "Star Wars Lego Set"
+        ]
+    },
+    "pointer": {
+        "20": 24,
+        "24": 20
+    }
+}
